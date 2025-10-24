@@ -10,6 +10,7 @@ import axios from 'axios';
 import qs from 'qs';
 import nodemailer from 'nodemailer';
 import req from 'express/lib/request';
+import { cartModel } from '~/models/cartModel';
 const createNew = async (reqBody) => {
     try {
         // kiem tra xem userName da ton tai trong he thong hay chua
@@ -31,6 +32,7 @@ const createNew = async (reqBody) => {
         // thuc hien luu thong tin vao database
         const createdUser = await userModel.createNew(newUser);
         const getNewUser = await userModel.findOneById(createdUser.insertedId);
+        await cartModel.createNew({ userId: getNewUser._id.toString() });
         // return tra ve cho controller
         return pickUser(getNewUser);
     } catch (error) {
@@ -186,10 +188,39 @@ const resetPassword = async (reqBody) => {
         throw error;
     }
 };
+const refreshToken = async (clientRefreshToken) => {
+    try {
+        // Verify / giải mã cái refresh token xem có hợp lệ không
+        const refreshTokenDecoded = await JwtProvider.verifyToken(
+            clientRefreshToken,
+            env.REFRESH_TOKEN_SECRET_SIGNATURE,
+        );
+
+        // Đoạn này vì chúng ta chỉ lưu những thông tin unique và cố định của user trong token rồi,
+        // vì vậy có thể lấy luôn từ decoded ra, tiết kiệm query vào DB để lấy data mới.
+        const userInfo = {
+            _id: refreshTokenDecoded._id,
+            userName: refreshTokenDecoded.username,
+        };
+
+        // Tạo accessToken mới
+        const accessToken = await JwtProvider.generateToken(
+            userInfo,
+            env.ACCESS_TOKEN_SECRET_SIGNATURE,
+            // 5 // 5 giây để test accessToken hết hạn
+            env.ACCESS_TOKEN_LIFE, // 1 tiếng
+        );
+
+        return { accessToken };
+    } catch (error) {
+        throw error;
+    }
+};
 export const userService = {
     createNew,
     login,
     googleLogin,
     forgotPassword,
     resetPassword,
+    refreshToken,
 };

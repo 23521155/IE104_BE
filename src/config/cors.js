@@ -11,7 +11,7 @@ export const corsOptions = {
         if (!origin && env.BUILD_MODE === 'dev') {
             return callback(null, true);
         }
-        // Kiểm tra x   em origin có phải là domain được chấp nhận hay không
+        // Kiểm tra xem origin có phải là domain được chấp nhận hay không
         if (!origin || WHITELIST_DOMAINS.includes(origin)) {
             return callback(null, true);
         }
@@ -26,4 +26,7 @@ export const corsOptions = {
 
     // CORS sẽ cho phép nhận cookies từ request
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 };

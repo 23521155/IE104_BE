@@ -12,5 +12,6 @@ Router.route('/login').post(userValidation.login, userController.login);
 Router.route('/google-login').post(userController.googleLogin);
 Router.route('/forgot-password').post(userValidation.forgotPassword, userController.forgotPassword);
 Router.route('/reset-password').post(userValidation.resetPassword, userController.resetPassword);
-// Router.route('/logout').delete(userController.logout);
+Router.route('/refresh_token').post(userController.refreshToken);
+Router.route('/logout').delete(userController.logout);
 export const userRoute = Router;

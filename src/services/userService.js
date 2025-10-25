@@ -11,6 +11,7 @@ import qs from 'qs';
 import nodemailer from 'nodemailer';
 import req from 'express/lib/request';
 import { cartModel } from '~/models/cartModel';
+import { wishListModel } from '~/models/wishlistModel';
 const createNew = async (reqBody) => {
     try {
         // kiem tra xem userName da ton tai trong he thong hay chua
@@ -33,6 +34,7 @@ const createNew = async (reqBody) => {
         const createdUser = await userModel.createNew(newUser);
         const getNewUser = await userModel.findOneById(createdUser.insertedId);
         await cartModel.createNew({ userId: getNewUser._id.toString() });
+        await wishListModel.createNew({ userId: getNewUser._id.toString() });
         // return tra ve cho controller
         return pickUser(getNewUser);
     } catch (error) {
@@ -106,6 +108,9 @@ const googleLogin = async (reqBody) => {
                 verifyToken: uuidv4(),
                 avatar: picture,
             });
+            const userAfterCreate = await userModel.findOneByEmail(emailGoogle);
+            await cartModel.createNew({ userId: userAfterCreate._id.toString() });
+            await wishListModel.createNew({ userId: userAfterCreate._id.toString() });
         }
         const existUser = await userModel.findOneByEmailGoogle(emailGoogle);
         const userInfo = {

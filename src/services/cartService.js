@@ -14,7 +14,7 @@ const addCart = async (reqBody, user) => {
         if (flag !== 1) {
             await cartModel.addCart(existingCart.cartItems, user._id);
             return 'This product was added';
-        } else return 'Thia product was already added';
+        } else return 'This product was already added';
     } catch (error) {
         throw error;
     }

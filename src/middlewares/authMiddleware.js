@@ -21,11 +21,11 @@ const isAuthorized = async (req, res, next) => {
         // Cho phep req di tiep
         next();
     } catch (error) {
-        console.log('🔥 Error trong verifyToken:', error?.message);
-        console.log('🔥 Full error:', error);
+        // console.log('🔥 Error trong verifyToken:', error?.message);
+        // console.log('🔥 Full error:', error);
         // Neu accessToken het han (expired) thi tra ve ma GONE - 410 de FE goi api refreshToken
         if (error?.message?.includes('jwt expired')) {
-            next(new ApiError(StatusCodes.GONE, 'need to refresh tokencc'));
+            next(new ApiError(StatusCodes.GONE, 'need to refresh token'));
             return;
         }
         // Neu nhu cai accessToken no co nhung loi khac thi tra ve 401 de FE goi sign out

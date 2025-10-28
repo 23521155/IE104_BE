@@ -74,10 +74,22 @@ const update = async (productTypeId, updateData) => {
         throw new Error(error);
     }
 };
+
+const getProductType = async () => {
+    try {
+        return await GET_DB()
+            .collection(PRODUCT_TYPE_COLLECTION_NAME)
+            .find()
+            .toArray();
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 export const productTypeModel = {
     PRODUCT_TYPE_COLLECTION_NAME,
     PRODUCT_TYPE_COLLECTION_SCHEMA,
     createNew,
     findOneById,
     update,
+    getProductType,
 };

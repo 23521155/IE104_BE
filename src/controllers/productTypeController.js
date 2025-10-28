@@ -9,7 +9,16 @@ const createNew = async (req, res, next) => {
         next(error);
     }
 };
-
+const getProductType = async (req, res, next) => {
+    try {
+        const query = req.query.q;
+        const createdProductType = await productTypeService.getProductType(query);
+        res.status(StatusCodes.OK).json(createdProductType);
+    } catch (error) {
+        next(error);
+    }
+};
 export const productTypeController = {
     createNew,
+    getProductType,
 };

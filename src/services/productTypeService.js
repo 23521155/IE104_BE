@@ -1,6 +1,7 @@
 import { productTypeModel } from '~/models/productTypeModel';
 
 import { slugify } from '~/utils/formatters';
+import { productModel } from '~/models/productModel';
 
 const createNew = async (reqBody) => {
     try {
@@ -15,7 +16,20 @@ const createNew = async (reqBody) => {
         throw error;
     }
 };
+const getProductType = async (query) => {
+    try {
+        const productTypes = await productTypeModel.getProductType();
+        const products = [];
+        for (const productType of productTypes) {
+            const data = await productModel.getAllProducts(productType.slug);
+            products.push(...data);
+        }
+        return products.filter((product) => product.name.toLowerCase().includes(query));
+    } catch (error) {
+        throw error;
+    }
+};
 
 export const productTypeService = {
-    createNew,
+    getProductType,
 };

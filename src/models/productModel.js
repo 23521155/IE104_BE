@@ -34,7 +34,7 @@ const PRODUCT_COLLECTION_SCHEMA = Joi.object({
     length: Joi.number(),
     origin: Joi.string().default(''),
     material: Joi.string().default(''),
-    brand: Joi.string().default(''),
+    brand: Joi.string().default('ANDIFI'),
     wishlistCount: Joi.number().default(0),
     soldCount: Joi.number().default(0),
     createdAt: Joi.date()
@@ -155,7 +155,70 @@ const getProducts = async (productType, page, itemsPerPage, queryFilters) => {
         throw new Error(error);
     }
 };
+const getAllProducts = async (productType) => {
+    const queryCondition = [
+        // Dk1: Board chua bi xoa
+        { _destroy: false },
+    ];
 
+    // if (queryFilters) {
+    //     Object.keys(queryFilters).forEach((key) => {
+    //         // Co phan biet chu hoa chu thuong
+    //         // queryCondition.push({ [key]: { $regex: queryFilters[key] } });
+    //         // Khong phan biet hoa thuong
+    //         queryCondition.push({ [key]: { $regex: new RegExp(queryFilters[key], 'i') } });
+    //     });
+    // }
+    return await GET_DB()
+        .collection(productType)
+        .aggregate(
+            [
+                // 1️⃣ Lọc những sản phẩm không bị xóa
+                { $match: { $and: queryCondition } },
+
+                {
+                    $addFields: {
+                        idString: { $toString: '$_id' },
+                    },
+                },
+
+                // 2️⃣ Nối (lookup) qua collection images
+                {
+                    $lookup: {
+                        from: 'images',
+                        localField: 'idString', // product._id
+                        foreignField: 'productId', // image.productId
+                        as: 'images',
+                    },
+                },
+
+                // 3️⃣ Chỉ giữ lại
+                {
+                    $addFields: {
+                        images: { $slice: ['$images', 5] },
+                    },
+                },
+
+                { $sort: { name: 1 } },
+
+                // 4️⃣ Loại bỏ các trường không cần thiết (tùy bạn)
+                // {
+                //     $project: {
+                //         name: 1,
+                //         price: 1,
+                //         description: 1,
+                //         stockQuantity: 1,
+                //         material: 1,
+                //         length: 1,
+                //         origin: 1,
+                //         images: 1,
+                //     },
+                // },
+            ],
+            { collation: { locale: 'en' } },
+        )
+        .toArray();
+};
 //
 // const update = async (productId, updateData) => {
 //     try {
@@ -184,5 +247,6 @@ export const productModel = {
     createNew,
     findOneById,
     getProducts,
+    getAllProducts,
     // update,
 };

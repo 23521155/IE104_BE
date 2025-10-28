@@ -6,6 +6,8 @@ import { productTypeController } from '~/controllers/productTypeController';
 
 const Router = express.Router();
 
-Router.route('/').post(productTypeValidation.createNew, productTypeController.createNew);
+Router.route('/')
+    .post(productTypeValidation.createNew, productTypeController.createNew)
+    .get(productTypeController.getProductType);
 
 export const productTypeRoute = Router;

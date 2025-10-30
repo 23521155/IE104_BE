@@ -24,12 +24,14 @@ const getProductType = async (query) => {
             const data = await productModel.getAllProducts(productType.slug);
             products.push(...data);
         }
-        return products.filter((product) => product.name.toLowerCase().includes(query));
+        if (query) return products.filter((product) => product.name.toLowerCase().includes(query.toLowerCase()));
+        else return products;
     } catch (error) {
         throw error;
     }
 };
 
 export const productTypeService = {
+    createNew,
     getProductType,
 };

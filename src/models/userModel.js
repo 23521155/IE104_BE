@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 import { GET_DB } from '~/config/mongodb';
-import { EMAIL_RULE, EMAIL_RULE_MESSAGE } from '~/utils/validators';
+import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PHONE_RULE, PHONE_RULE_MESSAGE } from '~/utils/validators';
 // Define tạm 2 roles cho user, tùy việc mở rộng dự án như thế nào mà mọi người có thể thêm role tùy ý sao cho phù hợp sau.
 const USER_ROLES = {
     CLIENT: 'client',
@@ -28,6 +28,11 @@ const USER_COLLECTION_SCHEMA = Joi.object({
         .default(USER_ROLES.CLIENT),
     isActive: Joi.boolean().default(false),
     verifyToken: Joi.string(),
+    phoneNumber: Joi.string()
+        .pattern(PHONE_RULE)
+        .message(PHONE_RULE_MESSAGE)
+        .default(''),
+    address: Joi.string().default(''),
     createdAt: Joi.date()
         .timestamp('javascript')
         .default(Date.now),

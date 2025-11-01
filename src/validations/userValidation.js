@@ -1,7 +1,14 @@
 import Joi from 'joi';
 import ApiError from '~/utils/ApiError';
 import { StatusCodes } from 'http-status-codes';
-import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from '~/utils/validators';
+import {
+    EMAIL_RULE,
+    EMAIL_RULE_MESSAGE,
+    PASSWORD_RULE,
+    PASSWORD_RULE_MESSAGE,
+    PHONE_RULE,
+    PHONE_RULE_MESSAGE,
+} from '~/utils/validators';
 
 export const firstNameSchema = Joi.string().required();
 export const lastNameSchema = Joi.string().required();
@@ -65,9 +72,31 @@ const resetPassword = async (req, res, next) => {
         throw error;
     }
 };
+const update = async (req, res, next) => {
+    const correctCondition = Joi.object({
+        firstName: Joi.string(),
+        lastName: Joi.string(),
+        username: Joi.string(),
+
+        phoneNumber: Joi.string()
+            .pattern(PHONE_RULE)
+            .message(PHONE_RULE_MESSAGE),
+        address: Joi.string(),
+        email: Joi.string()
+            .pattern(EMAIL_RULE)
+            .message(EMAIL_RULE_MESSAGE),
+    });
+    try {
+        await correctCondition.validateAsync(req.body, { abortEarly: false });
+        next();
+    } catch (error) {
+        throw error;
+    }
+};
 export const userValidation = {
     login,
     createNew,
     forgotPassword,
     resetPassword,
+    update,
 };

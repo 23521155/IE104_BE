@@ -9,7 +9,7 @@ import { JwtProvider } from '~/providers/JwtProvider';
 import axios from 'axios';
 import qs from 'qs';
 import nodemailer from 'nodemailer';
-import req from 'express/lib/request';
+import { CloudinaryProvider } from '~/providers/CloudinaryProvider';
 import { cartModel } from '~/models/cartModel';
 import { wishListModel } from '~/models/wishlistModel';
 const createNew = async (reqBody) => {
@@ -221,6 +221,22 @@ const refreshToken = async (clientRefreshToken) => {
         throw error;
     }
 };
+
+const update = async (userId, updatedData, avatar) => {
+    try {
+        const updateData = {
+            ...updatedData,
+            updatedAt: Date.now(),
+        };
+        if (avatar) {
+            const uploadResult = await CloudinaryProvider.streamUpload(avatar.buffer, 'avatar');
+            updateData.avatar = uploadResult.secure_url;
+        }
+        return await userModel.update(userId, updateData);
+    } catch (error) {
+        throw error;
+    }
+};
 export const userService = {
     createNew,
     login,
@@ -228,4 +244,5 @@ export const userService = {
     forgotPassword,
     resetPassword,
     refreshToken,
+    update,
 };

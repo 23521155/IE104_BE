@@ -33,8 +33,16 @@ const deleteCartProduct = async (productId, user) => {
         throw error;
     }
 };
+const update = async (cartId, updateData) => {
+    try {
+        return await cartModel.update(cartId, updateData);
+    } catch (error) {
+        throw error;
+    }
+};
 export const cartService = {
     addCart,
     getCart,
     deleteCartProduct,
+    update,
 };

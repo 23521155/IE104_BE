@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { userService } from '~/services/userService';
 import ms from 'ms';
 import ApiError from '~/utils/ApiError';
+import { userModel } from '~/models/userModel';
 
 const createNew = async (req, res, next) => {
     try {
@@ -85,6 +86,27 @@ const refreshToken = async (req, res, next) => {
         next(new ApiError(StatusCodes.FORBIDDEN, 'Please Sign In! (Error from refresh Token)'));
     }
 };
+
+const getUser = async (req, res, next) => {
+    try {
+        const user = await userModel.findOneById(req.jwtDecoded._id);
+        user.email = user.email.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)?.[0];
+        res.status(StatusCodes.OK).json(user);
+    } catch (error) {
+        next(error);
+    }
+};
+const update = async (req, res, next) => {
+    try {
+        const userId = req.jwtDecoded._id;
+        const updatedData = req.body;
+        const avatar = req.file;
+        const updatedUser = await userService.update(userId, updatedData, avatar);
+        res.status(StatusCodes.OK).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
+};
 export const userController = {
     login,
     createNew,
@@ -93,4 +115,6 @@ export const userController = {
     resetPassword,
     logout,
     refreshToken,
+    getUser,
+    update,
 };

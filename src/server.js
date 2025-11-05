@@ -39,10 +39,18 @@ const START_SERVER = () => {
         res.end('<h1>Hello World!</h1><hr>');
     });
 
-    app.listen(PORT, HOST, () => {
-        // eslint-disable-next-line no-console
-        console.log(`✅ Server is running at http://${HOST}:${PORT}/`);
-    });
+    if (env.BUILD_MODE === 'prod') {
+        app.listen(process.env.PORT, () => {
+            // eslint-disable-next-line no-console
+            console.log(`✅ Server is running at http://${HOST}:${process.env.PORT}/`);
+        });
+    } else {
+        app.listen(PORT, HOST, () => {
+            // eslint-disable-next-line no-console
+            console.log(`✅ Server is running at http://${HOST}:${PORT}/`);
+        });
+    }
+
     exitHook((signal) => {
         CLOSE_DB();
     });

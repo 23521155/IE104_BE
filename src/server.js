@@ -40,13 +40,12 @@ const START_SERVER = () => {
     });
 
     if (env.BUILD_MODE === 'prod') {
-        app.listen(process.env.PORT, () => {
-            // eslint-disable-next-line no-console
-            console.log(`✅ Server is running at http://${HOST}:${process.env.PORT}/`);
+        const PORT = process.env.PORT || 10000;
+        app.listen(PORT, '0.0.0.0', () => {
+            console.log(`✅ Server is running at http://0.0.0.0:${PORT}/`);
         });
     } else {
         app.listen(PORT, HOST, () => {
-            // eslint-disable-next-line no-console
             console.log(`✅ Server is running at http://${HOST}:${PORT}/`);
         });
     }

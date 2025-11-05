@@ -2,7 +2,8 @@ import { env } from '~/config/environment';
 //whitelist domain nhung domain dc truy cap
 export const WHITELIST_DOMAINS = [
     'http://localhost:63342',
-    'https://mern-murex-nu.vercel.app',
+    'https://ie104.onrender.com/',
+
     // them domain];
 ];
 

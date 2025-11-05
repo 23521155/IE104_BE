@@ -1,4 +1,4 @@
-import { wishListModel } from '~/models/wishListModel';
+import { wishListModel } from '~/models/wishlistModel';
 
 const addWishList = async (reqBody, user) => {
     try {

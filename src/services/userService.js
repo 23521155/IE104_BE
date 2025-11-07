@@ -151,6 +151,7 @@ const forgotPassword = async (reqBody) => {
         );
         // Tạo link reset
         const resetLink = `https://ie104.onrender.com/ResetPassword/ResetPassword.html?token=${resetToken}`;
+        console.log('reserLink', resetLink);
         // Cấu hình gửi mail
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -159,6 +160,7 @@ const forgotPassword = async (reqBody) => {
                 pass: env.EMAIL_PASSWORD,
             },
         });
+        console.log('transpoter', transporter);
         const info = await transporter.sendMail({
             from: `"ANDIFI Support" <${env.EMAIL_USERNAME}>`,
             to: email,
@@ -177,7 +179,7 @@ const forgotPassword = async (reqBody) => {
                                 <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                     <!-- Header -->
                                     <tr>
-                                        <td style="padding: 40px 40px 20px; text-align: center; background-color: #007bff; border-radius: 8px 8px 0 0;">
+                                        <td style="padding: 40px 40px 20px; text-align: center; background-color: #a09f9c; border-radius: 8px 8px 0 0;">
                                             <h1 style="margin: 0; color: #ffffff; font-size: 24px;">ANDIFI</h1>
                                         </td>
                                     </tr>
@@ -200,7 +202,7 @@ const forgotPassword = async (reqBody) => {
                                                         <a href="${resetLink}" 
                                                            style="display: inline-block; 
                                                                   padding: 14px 40px; 
-                                                                  background-color: #007bff; 
+                                                                  background-color: #a09f9c; 
                                                                   color: #ffffff; 
                                                                   text-decoration: none; 
                                                                   border-radius: 5px; 
@@ -251,6 +253,7 @@ const forgotPassword = async (reqBody) => {
                 </html>
             `,
         });
+        console.log('info', info);
         return info;
     } catch (error) {
         throw error;

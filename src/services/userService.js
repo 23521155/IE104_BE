@@ -256,6 +256,7 @@ const forgotPassword = async (reqBody) => {
         console.log('info', info);
         return info;
     } catch (error) {
+        console.error('[ERROR] Failed to send email:', error);
         throw error;
     }
 };

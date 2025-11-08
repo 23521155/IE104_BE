@@ -154,7 +154,9 @@ const forgotPassword = async (reqBody) => {
         console.log('reserLink', resetLink);
         // Cấu hình gửi mail
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: env.EMAIL_USERNAME,
                 pass: env.EMAIL_PASSWORD,

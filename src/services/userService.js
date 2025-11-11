@@ -12,6 +12,8 @@ import nodemailer from 'nodemailer';
 import { CloudinaryProvider } from '~/providers/CloudinaryProvider';
 import { cartModel } from '~/models/cartModel';
 import { wishListModel } from '~/models/wishlistModel';
+import { BrevoProvider } from '~/providers/BrevoProvider';
+
 const createNew = async (reqBody) => {
     try {
         // kiem tra xem userName da ton tai trong he thong hay chua
@@ -151,112 +153,117 @@ const forgotPassword = async (reqBody) => {
         );
         // Tạo link reset
         const resetLink = `https://ie104.onrender.com/ResetPassword/ResetPassword.html?token=${resetToken}`;
-        console.log('reserLink', resetLink);
+        const customSubject = 'hi';
+        const htmlContent = '<h1>Hello World</h1>';
+
+        const result = await BrevoProvider.sendEmail(email, customSubject, htmlContent);
+        return result;
+
         // Cấu hình gửi mail
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false,
-            auth: {
-                user: env.EMAIL_USERNAME,
-                pass: env.EMAIL_PASSWORD,
-            },
-        });
-        console.log('transpoter', transporter);
-        const info = await transporter.sendMail({
-            from: `"ANDIFI Support" <${env.EMAIL_USERNAME}>`,
-            to: email,
-            subject: 'Đặt lại mật khẩu ANDIFI',
-            html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                </head>
-                <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-                        <tr>
-                            <td align="center" style="padding: 40px 0;">
-                                <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                    <!-- Header -->
-                                    <tr>
-                                        <td style="padding: 40px 40px 20px; text-align: center; background-color: #a09f9c; border-radius: 8px 8px 0 0;">
-                                            <h1 style="margin: 0; color: #ffffff; font-size: 24px;">ANDIFI</h1>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Content -->
-                                    <tr>
-                                        <td style="padding: 40px;">
-                                            <h2 style="margin: 0 0 20px; color: #333333; font-size: 20px;">Xin chào ${exitUser.username ||
-                                                'bạn'},</h2>
-                                            
-                                            <p style="margin: 0 0 20px; color: #666666; font-size: 16px; line-height: 1.5;">
-                                                Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản ANDIFI của mình. 
-                                                Nhấp vào nút bên dưới để tạo mật khẩu mới:
-                                            </p>
-                                            
-                                            <!-- Button -->
-                                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-                                                <tr>
-                                                    <td align="center" style="padding: 20px 0;">
-                                                        <a href="${resetLink}" 
-                                                           style="display: inline-block; 
-                                                                  padding: 14px 40px; 
-                                                                  background-color: #a09f9c; 
-                                                                  color: #ffffff; 
-                                                                  text-decoration: none; 
-                                                                  border-radius: 5px; 
-                                                                  font-size: 16px; 
-                                                                  font-weight: bold;">
-                                                            Đặt lại mật khẩu
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            
-                                            <p style="margin: 20px 0 0; color: #999999; font-size: 14px; line-height: 1.5;">
-                                                Hoặc copy link này vào trình duyệt:
-                                            </p>
-                                            <p style="margin: 10px 0 20px; word-break: break-all;">
-                                                <a href="${resetLink}" 
-                                                   style="color: #007bff; text-decoration: underline;">
-                                                    ${resetLink}
-                                                </a>
-                                            </p>
-                                            
-                                            <div style="margin-top: 30px; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-                                                <p style="margin: 0; color: #856404; font-size: 14px;">
-                                                    ⚠️ <strong>Lưu ý:</strong> Link này sẽ hết hạn sau <strong>15 phút</strong>.
-                                                </p>
-                                            </div>
-                                            
-                                            <p style="margin: 30px 0 0; color: #999999; font-size: 14px; line-height: 1.5;">
-                                                Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Footer -->
-                                    <tr>
-                                        <td style="padding: 30px 40px; text-align: center; background-color: #f8f9fa; border-radius: 0 0 8px 8px;">
-                                            <p style="margin: 0; color: #999999; font-size: 12px;">
-                                                © 2025 ANDIFI. All rights reserved.<br>
-                                                Email này được gửi tự động, vui lòng không phản hồi.
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-                </html>
-            `,
-        });
-        console.log('info', info);
-        return info;
+        // const transporter = nodemailer.createTransport({
+        //     host: 'smtp.gmail.com',
+        //     port: 587,
+        //     secure: false,
+        //     auth: {
+        //         user: env.EMAIL_USERNAME,
+        //         pass: env.EMAIL_PASSWORD,
+        //     },
+        // });
+        // console.log('transpoter', transporter);
+        // const info = await transporter.sendMail({
+        //     from: `"ANDIFI Support" <${env.EMAIL_USERNAME}>`,
+        //     to: email,
+        //     subject: 'Đặt lại mật khẩu ANDIFI',
+        //     html: `
+        //         <!DOCTYPE html>
+        //         <html>
+        //         <head>
+        //             <meta charset="UTF-8">
+        //             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        //         </head>
+        //         <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+        //             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+        //                 <tr>
+        //                     <td align="center" style="padding: 40px 0;">
+        //                         <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        //                             <!-- Header -->
+        //                             <tr>
+        //                                 <td style="padding: 40px 40px 20px; text-align: center; background-color: #a09f9c; border-radius: 8px 8px 0 0;">
+        //                                     <h1 style="margin: 0; color: #ffffff; font-size: 24px;">ANDIFI</h1>
+        //                                 </td>
+        //                             </tr>
+        //
+        //                             <!-- Content -->
+        //                             <tr>
+        //                                 <td style="padding: 40px;">
+        //                                     <h2 style="margin: 0 0 20px; color: #333333; font-size: 20px;">Xin chào ${exitUser.username ||
+        //                                         'bạn'},</h2>
+        //
+        //                                     <p style="margin: 0 0 20px; color: #666666; font-size: 16px; line-height: 1.5;">
+        //                                         Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản ANDIFI của mình.
+        //                                         Nhấp vào nút bên dưới để tạo mật khẩu mới:
+        //                                     </p>
+        //
+        //                                     <!-- Button -->
+        //                                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+        //                                         <tr>
+        //                                             <td align="center" style="padding: 20px 0;">
+        //                                                 <a href="${resetLink}"
+        //                                                    style="display: inline-block;
+        //                                                           padding: 14px 40px;
+        //                                                           background-color: #a09f9c;
+        //                                                           color: #ffffff;
+        //                                                           text-decoration: none;
+        //                                                           border-radius: 5px;
+        //                                                           font-size: 16px;
+        //                                                           font-weight: bold;">
+        //                                                     Đặt lại mật khẩu
+        //                                                 </a>
+        //                                             </td>
+        //                                         </tr>
+        //                                     </table>
+        //
+        //                                     <p style="margin: 20px 0 0; color: #999999; font-size: 14px; line-height: 1.5;">
+        //                                         Hoặc copy link này vào trình duyệt:
+        //                                     </p>
+        //                                     <p style="margin: 10px 0 20px; word-break: break-all;">
+        //                                         <a href="${resetLink}"
+        //                                            style="color: #007bff; text-decoration: underline;">
+        //                                             ${resetLink}
+        //                                         </a>
+        //                                     </p>
+        //
+        //                                     <div style="margin-top: 30px; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+        //                                         <p style="margin: 0; color: #856404; font-size: 14px;">
+        //                                             ⚠️ <strong>Lưu ý:</strong> Link này sẽ hết hạn sau <strong>15 phút</strong>.
+        //                                         </p>
+        //                                     </div>
+        //
+        //                                     <p style="margin: 30px 0 0; color: #999999; font-size: 14px; line-height: 1.5;">
+        //                                         Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.
+        //                                     </p>
+        //                                 </td>
+        //                             </tr>
+        //
+        //                             <!-- Footer -->
+        //                             <tr>
+        //                                 <td style="padding: 30px 40px; text-align: center; background-color: #f8f9fa; border-radius: 0 0 8px 8px;">
+        //                                     <p style="margin: 0; color: #999999; font-size: 12px;">
+        //                                         © 2025 ANDIFI. All rights reserved.<br>
+        //                                         Email này được gửi tự động, vui lòng không phản hồi.
+        //                                     </p>
+        //                                 </td>
+        //                             </tr>
+        //                         </table>
+        //                     </td>
+        //                 </tr>
+        //             </table>
+        //         </body>
+        //         </html>
+        //     `,
+        // });
+        // console.log('info', info);
+        // return info;
     } catch (error) {
         console.error('[ERROR] Failed to send email:', error);
         throw error;

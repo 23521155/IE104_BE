@@ -28,6 +28,9 @@ const START_SERVER = () => {
     // // use APIs_V1
     app.use('/v1', APIs_V1);
 
+    app.use((req, res) => {
+        res.status(404).sendFile(join(__dirname, '404', '404.html'));
+    });
     // middlieware xu ly loi tap trung
     app.use(errorHandlingMiddleware);
 

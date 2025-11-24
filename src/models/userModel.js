@@ -22,7 +22,7 @@ const USER_COLLECTION_SCHEMA = Joi.object({
         .required()
         .trim()
         .strict(), // unique
-    avatar: Joi.string().default(null),
+    avatar: Joi.string().default('https://i.pinimg.com/236x/a8/9c/62/a89c6278fd539a81da3a32534648608a.jpg'),
     role: Joi.string()
         .valid(USER_ROLES.CLIENT, USER_ROLES.ADMIN)
         .default(USER_ROLES.CLIENT),
